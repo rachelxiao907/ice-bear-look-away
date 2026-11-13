@@ -90,7 +90,7 @@ final class ReminderApp: NSObject, NSApplicationDelegate {
 
 	private func updateCalendarMenu() {
 		calendarStatusItem?.title = calendar.availability.title
-		calendarConnectItem?.title = calendar.isConnected ? "Change Google Calendar connection…" : "Connect Google Calendar…"
+		calendarConnectItem?.title = calendar.isConnected ? "Reconnect Google Calendar…" : "Connect Google Calendar…"
 		calendarDisconnectItem?.isHidden = !calendar.isConnected
 		if case .unavailable(let reason) = calendar.availability {
 			calendarStatusItem?.toolTip = reason
@@ -121,6 +121,14 @@ final class ReminderApp: NSObject, NSApplicationDelegate {
 	}
 
 	@objc private func connectGoogleCalendar() {
+		if let sharedClientID = calendar.sharedClientID {
+			do {
+				try calendar.connect(clientID: sharedClientID)
+			} catch {
+				showError(error.localizedDescription)
+			}
+			return
+		}
 		let alert = NSAlert()
 		alert.messageText = "Connect Google Calendar"
 		alert.informativeText = "Paste the OAuth client ID for a Google Cloud Desktop app. The README explains how to create one. Ice Bear only requests free/busy availability."

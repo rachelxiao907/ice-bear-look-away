@@ -36,6 +36,12 @@ final class GoogleCalendar {
     }
     var isConnected: Bool { refreshToken != nil }
     var savedClientID: String { UserDefaults.standard.string(forKey: "googleClientID") ?? "" }
+    var sharedClientID: String? {
+        guard let url = Bundle.main.url(forResource: "GoogleOAuthClientID", withExtension: "txt"),
+              let value = try? String(contentsOf: url, encoding: .utf8) else { return nil }
+        let clientID = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        return clientID.isEmpty ? nil : clientID
+    }
 
     private let keychainService = "com.rachel.ice-bear-reminder.google-calendar"
     private let session = URLSession(configuration: .ephemeral)

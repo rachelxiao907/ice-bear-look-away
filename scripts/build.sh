@@ -31,6 +31,12 @@ for size in 16 32 64 128 256 512 1024; do
 done
 python3 "$repo_dir/scripts/create-icns.py" "$build_dir/icons" "$resources_dir/AppIcon.icns"
 
+if [[ -f "$repo_dir/Config/GoogleOAuthClientID.txt" ]]; then
+	cp "$repo_dir/Config/GoogleOAuthClientID.txt" "$resources_dir/GoogleOAuthClientID.txt"
+else
+	rm -f "$resources_dir/GoogleOAuthClientID.txt"
+fi
+
 mkdir -p "$app_dir/Contents/MacOS"
 swiftc -O -module-cache-path "$build_dir/module-cache" "$repo_dir/Sources/IceBearReminder.swift" "$repo_dir/Sources/GoogleCalendar.swift" -o "$app_dir/Contents/MacOS/IceBearReminder"
 cat > "$app_dir/Contents/Info.plist" <<'PLIST'
