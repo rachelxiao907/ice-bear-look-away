@@ -20,10 +20,4 @@ PY
 	fi
 	rm "$plist"
 fi
-if security find-generic-password -s com.rachel.ice-bear-reminder.google-calendar -a primary >/dev/null 2>&1; then
-	security delete-generic-password -s com.rachel.ice-bear-reminder.google-calendar -a primary >/dev/null
-fi
-if defaults read com.rachel.ice-bear-reminder >/dev/null 2>&1; then
-	defaults delete com.rachel.ice-bear-reminder >/dev/null
-fi
 echo "Ice Bear Reminder removed."

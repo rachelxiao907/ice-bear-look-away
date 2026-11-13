@@ -2,7 +2,7 @@
 
 A small macOS menu bar app for the 20-20-20 break: every 20 minutes, Ice Bear appears and asks you to look about 20 feet away for 20 seconds. The reminder has a countdown, a **Done** button, and a **Restart 20 seconds** button.
 
-The menu bar bear lets you **Pause reminders** and **Resume reminders**. Your pause choice is remembered across restarts. You can also choose **Show reminder now** to try it immediately. If you connect Google Calendar, reminders pause during busy times on your primary calendar and restart their 20-minute interval after the meeting.
+The menu bar bear lets you **Pause reminders** before a meeting and **Resume reminders** afterward. Your pause choice is remembered across restarts. You can also choose **Show reminder now** to try it immediately.
 
 ## Set up
 
@@ -22,26 +22,7 @@ To install the app somewhere else, set `INSTALL_DIR`:
 INSTALL_DIR="$HOME/Desktop" ./scripts/install.sh
 ```
 
-To stop and remove the app, its login item, and any saved Google Calendar connection, run `./scripts/uninstall.sh` from the cloned repository.
-
-## Connect Google Calendar (optional)
-
-The app checks only free/busy availability on your Google Calendar. It does not read meeting titles, guests, or descriptions. This connection is separate from macOS Calendar and requires no calendar sync in System Settings.
-
-Open Ice Bear from the menu bar and choose **Connect Google Calendar…**. If the app includes a shared OAuth client ID, sign-in opens in your browser. Until the shared Google Cloud project is ready, the app asks you to paste a Desktop app client ID. To create one:
-
-1. In [Google Cloud Console](https://console.cloud.google.com/), create or choose a project. Enable the [Google Calendar API](https://console.cloud.google.com/apis/library/calendar-json.googleapis.com).
-2. In [Google Auth Platform](https://console.cloud.google.com/auth/overview), configure the OAuth consent screen. Choose **External** if you use a personal Google account. While the app is in testing, add your Google account under **Test users**. Add the `https://www.googleapis.com/auth/calendar.freebusy` scope.
-3. Under **Clients**, create an OAuth client with application type **Desktop app**. Copy its **Client ID** (ending in `.apps.googleusercontent.com`). The app does not need a client secret.
-4. Paste the client ID into Ice Bear and finish sign-in in your browser.
-
-The app stores the refresh token in your Mac Keychain and checks your primary calendar every 30 seconds and again before showing a reminder. If it cannot check your calendar, it holds reminders until the connection recovers; the menu bar shows the error. **Disconnect Google Calendar** removes the saved token and returns to ordinary 20-minute reminders. Manual **Pause reminders** still takes priority. **Show reminder now** always opens a reminder when you choose it.
-
-## Shared Google OAuth client for maintainers
-
-The project owner creates one Google Cloud project, enables the [Google Calendar API](https://console.cloud.google.com/apis/library/calendar-json.googleapis.com), configures an External OAuth consent screen with the `https://www.googleapis.com/auth/calendar.freebusy` scope, and creates a **Desktop app** OAuth client. Put its **client ID** in `Config/GoogleOAuthClientID.txt` and commit that file. The app uses PKCE and does not use or include the client secret. The build copies the client ID into the app, so people who install it can connect without configuring a project of their own.
-
-While the OAuth app is in **Testing** mode, only listed test users can connect and their Google refresh tokens expire after seven days. Publishing the app for arbitrary Google users may require Google's verification process. Until a shared ID is bundled, the app offers a manual client-ID field for local testing.
+To stop and remove the app and its login item, run `./scripts/uninstall.sh` from the cloned repository.
 
 ## Sound
 

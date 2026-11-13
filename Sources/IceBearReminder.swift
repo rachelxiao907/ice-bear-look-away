@@ -3,11 +3,7 @@ import AppKit
 final class ReminderApp: NSObject, NSApplicationDelegate {
 	private var statusItem: NSStatusItem?
 	private var pauseItem: NSMenuItem?
-	private var calendarStatusItem: NSMenuItem?
-	private var calendarConnectItem: NSMenuItem?
-	private var calendarDisconnectItem: NSMenuItem?
 	private var reminderTimer: Timer?
-	private var calendarTimer: Timer?
 	private var window: NSWindow?
 	private var countdownLabel: NSTextField?
 	private var countdownTimer: Timer?
@@ -15,24 +11,11 @@ final class ReminderApp: NSObject, NSApplicationDelegate {
 	private var sound: NSSound?
 	private var secondsRemaining = 20
 	private var isPaused = UserDefaults.standard.bool(forKey: "remindersPaused")
-	private let calendar = GoogleCalendar()
 
 	func applicationDidFinishLaunching(_ notification: Notification) {
 		NSApplication.shared.setActivationPolicy(.accessory)
 		configureMenuBar()
-		calendar.onAvailabilityChange = { [weak self] _ in
-			self?.updateRunningState()
-		}
-		calendar.onSignInResult = { [weak self] result in
-			if case .failure(let error) = result { self?.showError(error.localizedDescription) }
-			self?.updateRunningState()
-		}
-		updateRunningState()
-		if calendar.isConnected { calendar.checkAvailability() }
-		calendarTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] _ in
-			guard let self, self.calendar.isConnected else { return }
-			self.calendar.checkAvailability()
-		}
+		if !isPaused { scheduleReminders() }
 	}
 
 	private func configureMenuBar() {
@@ -55,21 +38,6 @@ final class ReminderApp: NSObject, NSApplicationDelegate {
 		updatePauseMenu()
 
 		menu.addItem(.separator())
-		let calendarStatus = NSMenuItem(title: calendar.availability.title, action: nil, keyEquivalent: "")
-		calendarStatus.isEnabled = false
-		calendarStatusItem = calendarStatus
-		menu.addItem(calendarStatus)
-		let connect = NSMenuItem(title: "Connect Google Calendar…", action: #selector(connectGoogleCalendar), keyEquivalent: "")
-		connect.target = self
-		calendarConnectItem = connect
-		menu.addItem(connect)
-		let disconnect = NSMenuItem(title: "Disconnect Google Calendar", action: #selector(disconnectGoogleCalendar), keyEquivalent: "")
-		disconnect.target = self
-		calendarDisconnectItem = disconnect
-		menu.addItem(disconnect)
-		updateCalendarMenu()
-
-		menu.addItem(.separator())
 		let quit = NSMenuItem(title: "Quit Ice Bear Reminder", action: #selector(quitApp), keyEquivalent: "")
 		quit.target = self
 		menu.addItem(quit)
@@ -80,97 +48,25 @@ final class ReminderApp: NSObject, NSApplicationDelegate {
 	private func scheduleReminders() {
 		reminderTimer?.invalidate()
 		reminderTimer = Timer.scheduledTimer(withTimeInterval: 20 * 60, repeats: true) { [weak self] _ in
-			self?.reminderIsDue()
+			self?.showReminder()
 		}
 	}
 
 	private func updatePauseMenu() {
 		pauseItem?.title = isPaused ? "Resume reminders" : "Pause reminders"
-	}
-
-	private func updateCalendarMenu() {
-		calendarStatusItem?.title = calendar.availability.title
-		calendarConnectItem?.title = calendar.isConnected ? "Reconnect Google Calendar…" : "Connect Google Calendar…"
-		calendarDisconnectItem?.isHidden = !calendar.isConnected
-		if case .unavailable(let reason) = calendar.availability {
-			calendarStatusItem?.toolTip = reason
-		} else {
-			calendarStatusItem?.toolTip = nil
-		}
-	}
-
-	private func updateRunningState() {
-		updatePauseMenu()
-		updateCalendarMenu()
-		let canRemind = !isPaused && calendar.availability.allowsReminders
-		if canRemind {
-			if reminderTimer == nil { scheduleReminders() }
-		} else {
-			reminderTimer?.invalidate()
-			reminderTimer = nil
-			window?.close()
-		}
-		let state = isPaused ? "paused" : (calendar.availability.allowsReminders ? "every 20 minutes" : calendar.availability.title)
-		statusItem?.button?.toolTip = "Ice Bear eye reminder: \(state)"
+		statusItem?.button?.toolTip = isPaused ? "Ice Bear eye reminder: paused" : "Ice Bear eye reminder: every 20 minutes"
 	}
 
 	@objc private func togglePause() {
 		isPaused.toggle()
 		UserDefaults.standard.set(isPaused, forKey: "remindersPaused")
-		updateRunningState()
-	}
-
-	@objc private func connectGoogleCalendar() {
-		if let sharedClientID = calendar.sharedClientID {
-			do {
-				try calendar.connect(clientID: sharedClientID)
-			} catch {
-				showError(error.localizedDescription)
-			}
-			return
+		if isPaused {
+			reminderTimer?.invalidate()
+			window?.close()
+		} else {
+			scheduleReminders()
 		}
-		let alert = NSAlert()
-		alert.messageText = "Connect Google Calendar"
-		alert.informativeText = "Paste the OAuth client ID for a Google Cloud Desktop app. The README explains how to create one. Ice Bear only requests free/busy availability."
-		alert.addButton(withTitle: "Continue")
-		alert.addButton(withTitle: "Cancel")
-		let field = NSTextField(frame: NSRect(x: 0, y: 0, width: 390, height: 24))
-		field.placeholderString = "123456789.apps.googleusercontent.com"
-		field.stringValue = calendar.savedClientID
-		alert.accessoryView = field
-		NSApplication.shared.activate(ignoringOtherApps: true)
-		guard alert.runModal() == .alertFirstButtonReturn else { return }
-		do {
-			try calendar.connect(clientID: field.stringValue)
-		} catch {
-			showError(error.localizedDescription)
-		}
-	}
-
-	@objc private func disconnectGoogleCalendar() {
-		do {
-			try calendar.disconnect()
-		} catch {
-			showError(error.localizedDescription)
-		}
-	}
-
-	private func showError(_ message: String) {
-		let alert = NSAlert()
-		alert.alertStyle = .warning
-		alert.messageText = "Google Calendar connection"
-		alert.informativeText = message
-		NSApplication.shared.activate(ignoringOtherApps: true)
-		alert.runModal()
-	}
-
-	private func reminderIsDue() {
-		guard !isPaused else { return }
-		guard calendar.isConnected else { showReminder(); return }
-		calendar.checkAvailability { [weak self] result in
-			guard let self, !self.isPaused, self.calendar.isConnected else { return }
-			if case .success(false) = result { self.showReminder() }
-		}
+		updatePauseMenu()
 	}
 
 	@objc private func showReminderNow() {
@@ -306,12 +202,7 @@ extension ReminderApp: NSWindowDelegate {
 	}
 }
 
-@main
-enum IceBearMain {
-	static func main() {
-		let app = NSApplication.shared
-		let delegate = ReminderApp()
-		app.delegate = delegate
-		app.run()
-	}
-}
+let app = NSApplication.shared
+let delegate = ReminderApp()
+app.delegate = delegate
+app.run()
