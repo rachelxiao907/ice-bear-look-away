@@ -135,7 +135,7 @@ final class ReminderApp: NSObject, NSApplicationDelegate {
 		NSLayoutConstraint.activate([
 			stack.centerXAnchor.constraint(equalTo: content.centerXAnchor),
 			stack.centerYAnchor.constraint(equalTo: content.centerYAnchor, constant: -3),
-			bear.widthAnchor.constraint(equalToConstant: 235),
+			bear.widthAnchor.constraint(equalToConstant: 188),
 			bear.heightAnchor.constraint(equalToConstant: 260),
 		])
 

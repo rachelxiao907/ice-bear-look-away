@@ -5,7 +5,7 @@ let destination = CommandLine.arguments[2]
 guard let image = NSImage(contentsOfFile: source),
 	let bitmap = NSBitmapImageRep(
 		bitmapDataPlanes: nil,
-		pixelsWide: 650,
+		pixelsWide: 520,
 		pixelsHigh: 720,
 		bitsPerSample: 8,
 		samplesPerPixel: 4,
@@ -21,8 +21,8 @@ else { fatalError("Could not create popup image") }
 NSGraphicsContext.saveGraphicsState()
 NSGraphicsContext.current = context
 image.draw(
-	in: NSRect(x: 0, y: 0, width: 650, height: 720),
-	from: NSRect(x: 410, y: 0, width: 650, height: 720),
+	in: NSRect(x: 0, y: 0, width: 520, height: 720),
+	from: NSRect(x: 410, y: 0, width: 520, height: 720),
 	operation: .copy,
 	fraction: 1
 )

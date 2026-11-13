@@ -30,7 +30,7 @@ When Slack is installed at `/Applications/Slack.app`, reminders play Slack's loc
 
 ## Image
 
-The build downloads [this Ice Bear thumbnail](https://i.ytimg.com/vi/j5HZudOrLqk/maxresdefault.jpg), crops out the lower-left logo, and uses a tall crop that shows Ice Bear and the full axe in the reminder. The app icon uses a tighter crop. The image is from *We Bare Bears* and is not included in the repository. No show image is committed to this repository.
+The build downloads [this Ice Bear thumbnail](https://i.ytimg.com/vi/j5HZudOrLqk/maxresdefault.jpg), crops out the lower-left logo, and uses a centered, tall crop that shows Ice Bear and all of the axe visible in the source thumbnail. The app icon uses a tighter crop. The image is from *We Bare Bears* and is not included in the repository. No show image is committed to this repository.
 
 To build with a JPG already on your computer, use `BEAR_IMAGE`:
 
