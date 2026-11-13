@@ -25,6 +25,7 @@ else
 fi
 
 swift -module-cache-path "$build_dir/module-cache" "$repo_dir/scripts/make-icon.swift" "$resources_dir/BearImage.jpg" "$resources_dir/AppIcon.png"
+swift -module-cache-path "$build_dir/module-cache" "$repo_dir/scripts/make-popup-image.swift" "$resources_dir/BearImage.jpg" "$resources_dir/PopupBear.png"
 for size in 16 32 64 128 256 512 1024; do
 	sips --resampleHeightWidth "$size" "$size" "$resources_dir/AppIcon.png" --out "$build_dir/icons/icon-$size.png" >/dev/null
 done
