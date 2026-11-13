@@ -32,7 +32,7 @@ done
 python3 "$repo_dir/scripts/create-icns.py" "$build_dir/icons" "$resources_dir/AppIcon.icns"
 
 mkdir -p "$app_dir/Contents/MacOS"
-swiftc -O -module-cache-path "$build_dir/module-cache" "$repo_dir/Sources/IceBearReminder.swift" -o "$app_dir/Contents/MacOS/IceBearReminder"
+swiftc -O -module-cache-path "$build_dir/module-cache" "$repo_dir/Sources/IceBearReminder.swift" "$repo_dir/Sources/GoogleCalendar.swift" -o "$app_dir/Contents/MacOS/IceBearReminder"
 cat > "$app_dir/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
