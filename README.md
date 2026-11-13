@@ -30,7 +30,7 @@ When Slack is installed at `/Applications/Slack.app`, reminders play Slack's loc
 
 ## Image
 
-The build downloads [this Ice Bear thumbnail](https://i.ytimg.com/vi/j5HZudOrLqk/maxresdefault.jpg) and uses it in the reminder. The app icon is cropped from the same image. The image is from *We Bare Bears* and is not part of this project's MIT license. No show image is committed to this repository.
+The build downloads [this Ice Bear thumbnail](https://i.ytimg.com/vi/j5HZudOrLqk/maxresdefault.jpg), crops out the lower-left logo, and uses the Ice Bear crop in both the reminder and app icon. The image is from *We Bare Bears* and is not included in the repository. No show image is committed to this repository.
 
 To build with a JPG already on your computer, use `BEAR_IMAGE`:
 
@@ -42,4 +42,4 @@ BEAR_IMAGE="/path/to/your-image.jpg" ./scripts/install.sh
 
 Run `./scripts/build.sh`. The finished app is `build/Ice Bear Reminder.app`.
 
-The source code is licensed under [MIT](LICENSE). *We Bare Bears*, Ice Bear, the thumbnail, and Slack are owned by their respective rights holders. This is an independent fan project.
+*We Bare Bears*, Ice Bear, the thumbnail, and Slack are owned by their respective rights holders. This is an independent fan project.

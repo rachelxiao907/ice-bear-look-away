@@ -105,7 +105,7 @@ final class ReminderApp: NSObject, NSApplicationDelegate {
 		window.contentView = content
 
 		let bear = NSImageView()
-		bear.image = Bundle.main.url(forResource: "BearImage", withExtension: "jpg").flatMap(NSImage.init(contentsOf:))
+		bear.image = Bundle.main.url(forResource: "AppIcon", withExtension: "png").flatMap(NSImage.init(contentsOf:))
 		bear.imageScaling = .scaleProportionallyUpOrDown
 		let title = label("Look away for a moment", size: 25, weight: .bold)
 		let instruction = label("Find something about 20 feet away.\nKeep looking at it for 20 seconds.", size: 16, weight: .regular)
@@ -135,8 +135,8 @@ final class ReminderApp: NSObject, NSApplicationDelegate {
 		NSLayoutConstraint.activate([
 			stack.centerXAnchor.constraint(equalTo: content.centerXAnchor),
 			stack.centerYAnchor.constraint(equalTo: content.centerYAnchor, constant: -3),
-			bear.widthAnchor.constraint(equalToConstant: 350),
-			bear.heightAnchor.constraint(equalToConstant: 197),
+			bear.widthAnchor.constraint(equalToConstant: 200),
+			bear.heightAnchor.constraint(equalToConstant: 200),
 		])
 
 		window.makeKeyAndOrderFront(nil)
