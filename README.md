@@ -1,4 +1,4 @@
-# Look Away Bear
+# Ice Bear Look Away
 
 A small macOS menu bar app for the 20-20-20 break: every 20 minutes, Ice Bear appears and asks you to look about 20 feet away for 20 seconds. The reminder has a countdown, a **Done** button, and a **Restart 20 seconds** button.
 
@@ -9,8 +9,8 @@ The menu bar bear lets you **Pause reminders** before a meeting and **Resume rem
 You need a Mac, an internet connection for the first build, and Apple's Xcode Command Line Tools. If the tools are missing, run `xcode-select --install` and finish Apple's installer.
 
 ```bash
-git clone https://github.com/rachelxiao907/look-away-bear.git
-cd look-away-bear
+git clone https://github.com/rachelxiao907/ice-bear-look-away.git
+cd ice-bear-look-away
 ./scripts/install.sh
 ```
 
